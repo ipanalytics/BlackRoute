@@ -193,3 +193,9 @@ site/                       Static GitHub Pages site
 ## Notes
 
 Blackroute is a reputation compiler, not a verdict engine. Treat labels as signals, combine them with your own allowlists and policy, and review high-impact blocking decisions before enforcing them globally.
+
+## License
+
+Apache-2.0
+
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
