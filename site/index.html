@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blackroute — Local IP reputation MMDB</title>
+    <meta name="description" content="Blackroute builds a local IP reputation database from public abuse, malware, bot, bogon, and high-risk infrastructure feeds. Export MMDB, CSV, JSONL, and build stats for gateways, proxies, SIEM, fraud checks, and enrichment jobs.">
+    <meta name="theme-color" content="#081017">
+    <meta property="og:title" content="Blackroute — Local IP reputation MMDB">
+    <meta property="og:description" content="Transparent local IP reputation builds for gateways, proxies, fraud checks, SIEM pipelines, and internal enrichment.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="Blackroute home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Blackroute</span>
+      </a>
+      <nav>
+        <a href="#use-cases">Use cases</a>
+        <a href="#outputs">Outputs</a>
+        <a href="#sources">Sources</a>
+        <a href="#quickstart">Quick start</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero section-shell">
+        <div class="hero-copy">
+          <p class="eyebrow">Local IP reputation · deterministic MMDB builds</p>
+          <h1>Turn public threat feeds into a local reputation database.</h1>
+          <p class="lead">Blackroute compiles abuse, malware, bot, bogon, anonymous infrastructure, and high-risk prefix feeds into <code>blackroute.mmdb</code> — built for gateways, proxies, fraud checks, SIEM enrichment, and internal network policy.</p>
+          <div class="actions" aria-label="Primary actions">
+            <a href="#quickstart" class="button primary">Start building</a>
+            <a href="#outputs" class="button">See outputs</a>
+          </div>
+          <ul class="proof-points" aria-label="Project qualities">
+            <li>No DNS lookups</li>
+            <li>No scanning</li>
+            <li>No external runtime API</li>
+            <li>Auditable source mapping</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual" aria-label="Blackroute data flow diagram">
+          <div class="flow-card intake">
+            <span class="card-label">Inputs</span>
+            <strong>Public reputation feeds</strong>
+            <small>abuse · malware · bogon · anonymizer · ASN risk</small>
+          </div>
+          <div class="flow-line" aria-hidden="true"></div>
+          <div class="flow-card compiler">
+            <span class="card-label">Compiler</span>
+            <strong>Normalize, label, merge</strong>
+            <small>source · confidence · threat · infrastructure</small>
+          </div>
+          <div class="flow-line" aria-hidden="true"></div>
+          <div class="flow-card output">
+            <span class="card-label">Artifacts</span>
+            <strong>blackroute.mmdb</strong>
+            <small>CSV · JSONL · run_stats.json</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Positioning highlights">
+        <div><strong>Local-first</strong><span>Fast lookups inside your own stack.</span></div>
+        <div><strong>Transparent</strong><span>Every record keeps feed origin and labels.</span></div>
+        <div><strong>CI-ready</strong><span>Run manually, from cron, or GitHub Actions.</span></div>
+        <div><strong>Conservative</strong><span>Private, multicast, unspecified, and overly broad ranges are ignored.</span></div>
+      </section>
+
+      <section id="use-cases" class="section-shell split">
+        <div>
+          <p class="eyebrow">Why teams use it</p>
+          <h2>Reputation data you can explain, rebuild, and ship.</h2>
+          <p class="section-lead">Commercial reputation APIs are useful, but not every gateway, proxy, fraud system, or enrichment job should depend on a live external lookup. Blackroute gives operators a repeatable local artifact that can be reviewed, diffed, versioned, and deployed where latency, privacy, or auditability matter.</p>
+        </div>
+        <div class="use-grid">
+          <article>
+            <h3>Gateway policy</h3>
+            <p>Use reputation labels as one signal for firewall, proxy, WAF, and edge access decisions.</p>
+          </article>
+          <article>
+            <h3>Fraud checks</h3>
+            <p>Enrich login, signup, payment, and abuse workflows without calling an external API at runtime.</p>
+          </article>
+          <article>
+            <h3>SIEM enrichment</h3>
+            <p>Attach threat and infrastructure context to IP events in pipelines, dashboards, and investigations.</p>
+          </article>
+          <article>
+            <h3>Dataset engineering</h3>
+            <p>Produce deterministic MMDB, CSV, JSONL, and stats files for internal data products.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-shell integrity">
+        <div>
+          <p class="eyebrow">Opinionated by design</p>
+          <h2>Reputation compiler, not a verdict engine.</h2>
+        </div>
+        <p>Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files. Use the result as a signal, combine it with allowlists and policy, and review high-impact blocking decisions before enforcement.</p>
+      </section>
+
+      <section id="outputs" class="section-shell outputs">
+        <div class="section-heading">
+          <p class="eyebrow">Artifacts</p>
+          <h2>One build, multiple operational formats.</h2>
+        </div>
+        <div class="output-grid">
+          <article>
+            <code>release/blackroute.mmdb</code>
+            <p>MaxMind-compatible database for runtime IP and prefix lookups.</p>
+          </article>
+          <article>
+            <code>release/blackroute.csv</code>
+            <p>Flat table for review, diffing, import jobs, and offline QA.</p>
+          </article>
+          <article>
+            <code>release/blackroute.jsonl</code>
+            <p>Line-delimited records for streaming pipelines and data lake ingestion.</p>
+          </article>
+          <article>
+            <code>release/run_stats.json</code>
+            <p>Build summary, label counts, and run metadata for monitoring.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-shell code-panel">
+        <div class="terminal" aria-label="Example MMDB record">
+          <div class="bar"><span></span><span></span><span></span></div>
+          <pre><code>{
+  "matched_prefix": "203.0.113.10/32",
+  "threat": ["recent_attack_any", "recent_attack_ssh"],
+  "infrastructure": ["bogon"],
+  "sources": ["blocklist_de_ssh"],
+  "confidence": 70,
+  "score": 55,
+  "level": "medium",
+  "observed_at": "2026-05-20T12:00:00Z",
+  "database_built_at": "2026-05-20T12:05:00Z"
+}</code></pre>
+        </div>
+        <div>
+          <p class="eyebrow">Record model</p>
+          <h2>Built for explainable enforcement.</h2>
+          <p class="section-lead">A lookup should not return a mysterious block/no-block answer. Blackroute keeps the matched prefix, source identifiers, confidence, threat labels, infrastructure labels, score, and build timestamps so decisions can be traced back to inputs.</p>
+        </div>
+      </section>
+
+      <section id="sources" class="section-shell sources">
+        <div class="section-heading">
+          <p class="eyebrow">Included source families</p>
+          <h2>Public feeds, normalized into one schema.</h2>
+        </div>
+        <div class="source-list">
+          <span>blocklist.de SSH/mail/web/IMAP/FTP/SIP/bots</span>
+          <span>Emerging Threats compromised and hostile hosts</span>
+          <span>CINSscore multi-sensor risk</span>
+          <span>FireHOL anonymizer and 1-day abuser feeds</span>
+          <span>Spamhaus DROP and ASNDROP-derived infrastructure</span>
+          <span>Team Cymru full bogon prefixes</span>
+          <span>abuse.ch Feodo Tracker botnet C2 IPs</span>
+          <span>SANS ISC DShield, GreenSnow, and IPsum</span>
+        </div>
+        <p class="note">Commercial and API-key feeds are intentionally not bundled. Add private entries in <code>configs/feeds.yaml</code> when your license allows local redistribution or internal use.</p>
+      </section>
+
+      <section class="section-shell labels">
+        <article>
+          <h2>Threat labels</h2>
+          <p>Recent attack activity, bot signals, malware hosts, compromised systems, persistent attackers, and community or multi-sensor high-risk indicators.</p>
+        </article>
+        <article>
+          <h2>Infrastructure labels</h2>
+          <p>Bogons, anonymous infrastructure, cybercrime prefixes, aggregate anonymizers, and ASN-derived high-risk network context.</p>
+        </article>
+      </section>
+
+      <section id="quickstart" class="section-shell quickstart">
+        <div>
+          <p class="eyebrow">Quick start</p>
+          <h2>Build locally or automate in CI.</h2>
+          <p class="section-lead">Use the wrapper for normal operation, skip MMDB for data-only exports, or run a selected set of feeds for focused testing.</p>
+        </div>
+        <div class="terminal" aria-label="Blackroute quick start commands">
+          <div class="bar"><span></span><span></span><span></span></div>
+          <pre><code>bash scripts/setup-server.sh
+./run.sh
+./run.sh --skip-mmdb
+./run.sh --only=blocklist_de_ssh,emergingthreats_compromised
+./run.sh --feeds=configs/feeds.yaml --output=release</code></pre>
+        </div>
+      </section>
+
+      <section class="section-shell cta">
+        <p class="eyebrow">Ship reputation data as an artifact</p>
+        <h2>Keep runtime lookups fast, local, and reviewable.</h2>
+        <p>Blackroute is a practical alternative or supplement to paid reputation databases when you need local control, auditability, and repeatable builds.</p>
+        <div class="actions">
+          <a href="#quickstart" class="button primary">Build Blackroute</a>
+          <a href="#sources" class="button">Review source catalog</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Blackroute</span>
+      <span>Local IP reputation database · MaxMind-compatible output</span>
+    </footer>
+  </body>
+</html>
