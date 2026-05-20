@@ -4,6 +4,8 @@ Blackroute builds a local IP reputation database from public abuse, malware, bot
 
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
+![Blackroute Banner](https://raw.githubusercontent.com/ipanalytics/blackroute/main/site/banner.png)
+
 ## Why Blackroute
 
 - Transparent source mapping: every record keeps the feed name, source URL, confidence, threat labels, and infrastructure labels.
