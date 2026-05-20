@@ -1,0 +1,161 @@
+feeds:
+  - kind: textlist
+    name: blocklist_de_ssh
+    display_name: blocklist.de SSH
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_ssh]
+    urls:
+      - https://lists.blocklist.de/lists/ssh.txt
+
+  - kind: textlist
+    name: blocklist_de_mail
+    display_name: blocklist.de Mail
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_mail]
+    urls:
+      - https://lists.blocklist.de/lists/mail.txt
+
+  - kind: textlist
+    name: blocklist_de_web
+    display_name: blocklist.de Apache
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_web]
+    urls:
+      - https://lists.blocklist.de/lists/apache.txt
+
+  - kind: textlist
+    name: blocklist_de_imap
+    display_name: blocklist.de IMAP
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_imap]
+    urls:
+      - https://lists.blocklist.de/lists/imap.txt
+
+  - kind: textlist
+    name: blocklist_de_ftp
+    display_name: blocklist.de FTP
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_ftp]
+    urls:
+      - https://lists.blocklist.de/lists/ftp.txt
+
+  - kind: textlist
+    name: blocklist_de_sip
+    display_name: blocklist.de SIP
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_sip]
+    urls:
+      - https://lists.blocklist.de/lists/sip.txt
+
+  - kind: textlist
+    name: blocklist_de_bots
+    display_name: blocklist.de Bots
+    trust: aggregator
+    threat: [recent_attack_any, recent_badbot_or_regbot]
+    urls:
+      - https://lists.blocklist.de/lists/bots.txt
+
+  - kind: textlist
+    name: blocklist_de_strongips
+    display_name: blocklist.de Strong IPs
+    trust: aggregator
+    threat: [persistent_attacker]
+    urls:
+      - https://lists.blocklist.de/lists/strongips.txt
+
+  - kind: textlist
+    name: emergingthreats_compromised
+    display_name: Emerging Threats Compromised
+    trust: aggregator
+    threat: [compromised_or_hostile_host]
+    urls:
+      - https://rules.emergingthreats.net/blockrules/compromised-ips.txt
+
+  - kind: textlist
+    name: cinsscore_badguys
+    display_name: CINSscore Badguys
+    trust: aggregator
+    threat: [community_high_risk, multi_sensor_high_risk]
+    urls:
+      - https://cinsscore.com/list/ci-badguys.txt
+
+  - kind: textlist
+    name: firehol_anonymous
+    display_name: FireHOL Anonymous
+    trust: aggregator
+    infrastructure: [aggregate_anonymizer]
+    urls:
+      - https://iplists.firehol.org/files/firehol_anonymous.netset
+
+  - kind: textlist
+    name: firehol_abusers_1d
+    display_name: FireHOL Abusers 1d
+    trust: aggregator
+    threat: [recent_attack_any, aggregate_abuser_1d]
+    urls:
+      - https://iplists.firehol.org/files/firehol_abusers_1d.netset
+
+  - kind: textlist
+    name: spamhaus_asndrop
+    display_name: Spamhaus ASNDROP
+    trust: aggregator
+    infrastructure: [prefix_cybercrime, asn_high_risk]
+    urls:
+      - https://www.spamhaus.org/drop/asndrop.json
+
+  - kind: textlist
+    name: team_cymru_fullbogons_ipv4
+    display_name: Team Cymru Fullbogons IPv4
+    trust: aggregator
+    infrastructure: [bogon]
+    urls:
+      - https://www.team-cymru.org/Services/Bogons/fullbogons-ipv4.txt
+
+  - kind: textlist
+    name: abusech_feodo_c2
+    display_name: abuse.ch Feodo Tracker Botnet C2
+    trust: curated
+    threat: [malware_host_active, compromised_or_hostile_host]
+    urls:
+      - https://feodotracker.abuse.ch/downloads/ipblocklist.txt
+
+  - kind: textlist
+    name: spamhaus_drop
+    display_name: Spamhaus DROP
+    trust: curated
+    infrastructure: [prefix_cybercrime]
+    threat: [compromised_or_hostile_host]
+    urls:
+      - https://www.spamhaus.org/drop/drop.txt
+
+  - kind: textlist
+    name: dshield_block
+    display_name: SANS ISC DShield Block List
+    trust: community
+    threat: [recent_attack_any, multi_sensor_high_risk]
+    urls:
+      - https://www.dshield.org/block.txt
+
+  - kind: textlist
+    name: greensnow
+    display_name: GreenSnow
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk]
+    urls:
+      - https://blocklist.greensnow.co/greensnow.txt
+
+  - kind: textlist
+    name: ipsum_level3
+    display_name: IPsum Level 3
+    trust: aggregator
+    threat: [community_high_risk, multi_sensor_high_risk]
+    urls:
+      - https://raw.githubusercontent.com/stamparm/ipsum/master/levels/3.txt
+
+  - kind: textlist
+    name: team_cymru_fullbogons_ipv6
+    display_name: Team Cymru Fullbogons IPv6
+    trust: authoritative
+    infrastructure: [bogon]
+    urls:
+      - https://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
