@@ -76,6 +76,18 @@ Run tests:
 go test ./...
 ```
 
+## Releases
+
+The release workflow can be started by pushing a `v*` tag or from GitHub Actions with `workflow_dispatch`. Each release publishes compiled binaries and the generated database artifacts:
+
+- `blackroute_<version>_<os>_<arch>.tar.gz` or `.zip`
+- `blackroute_<version>_database.mmdb`
+- `blackroute_<version>_records.csv`
+- `blackroute_<version>_records.jsonl`
+- `blackroute_<version>_run_stats.json`
+- `blackroute_<version>_database.tar.gz`
+- `checksums.txt`
+
 Build a local ThreatFox IP feed directly from the public abuse.ch export:
 
 ```bash
