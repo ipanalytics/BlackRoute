@@ -84,9 +84,62 @@ jobs:
             blackroute_*.zip
           if-no-files-found: error
 
+  database:
+    name: Build database artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Blackroute database
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          set -euo pipefail
+          go build -trimpath -ldflags="-s -w" -o ./bin/blackroute ./cmd/collector
+          ./bin/blackroute --feeds=configs/feeds.yaml --output=release
+
+          test -s release/blackroute.mmdb
+          test -s release/blackroute.csv
+          test -s release/blackroute.jsonl
+          test -s release/run_stats.json
+
+          cp release/blackroute.mmdb "blackroute_${VERSION}_database.mmdb"
+          cp release/blackroute.csv "blackroute_${VERSION}_records.csv"
+          cp release/blackroute.jsonl "blackroute_${VERSION}_records.jsonl"
+          cp release/run_stats.json "blackroute_${VERSION}_run_stats.json"
+          tar -czf "blackroute_${VERSION}_database.tar.gz" -C release \
+            blackroute.mmdb blackroute.csv blackroute.jsonl run_stats.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blackroute-${{ steps.version.outputs.value }}-database
+          path: |
+            blackroute_*_database.tar.gz
+            blackroute_*_database.mmdb
+            blackroute_*_records.csv
+            blackroute_*_records.jsonl
+            blackroute_*_run_stats.json
+          if-no-files-found: error
+
   publish:
     name: Publish GitHub release
-    needs: build
+    needs:
+      - build
+      - database
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -108,7 +161,9 @@ jobs:
       - name: Checksums
         run: |
           cd dist
-          sha256sum blackroute_* > checksums.txt
+          find . -maxdepth 1 -type f ! -name checksums.txt -print0 \
+            | sort -z \
+            | xargs -0 sha256sum > checksums.txt
 
       - name: Publish
         uses: softprops/action-gh-release@v2
@@ -118,6 +173,4 @@ jobs:
           prerelease: ${{ steps.release.outputs.prerelease }}
           generate_release_notes: true
           files: |
-            dist/blackroute_*.tar.gz
-            dist/blackroute_*.zip
-            dist/checksums.txt
+            dist/*
