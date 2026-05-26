@@ -1,0 +1,16 @@
+name: Feed monitor
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check feed availability
+        env:
+          MAX_FEED_AGE_HOURS: "168"
+        run: scripts/check-feeds.sh
