@@ -375,15 +375,6 @@ feeds:
       - https://malsilo.gitlab.io/feeds/dumps/ip_list.txt
 
   - kind: textlist
-    name: james_brine_bruteforce
-    display_name: James Brine Bruteforce IPs
-    trust: community
-    threat: [recent_attack_any, bruteforce]
-    classification: [ssh_bruteforce, ftp_bruteforce, rdp_bruteforce, telnet_bruteforce]
-    urls:
-      - https://jamesbrine.com.au/csv
-
-  - kind: textlist
     name: ellio_community
     display_name: ELLIO IP Feed Community
     trust: aggregator

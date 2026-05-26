@@ -4,7 +4,7 @@ Blackroute builds a local IP reputation database from public abuse, malware, bot
 
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
-The default catalog currently contains 59 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
+The default catalog currently contains 58 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
 
 ## Dataset Coverage
 
@@ -12,11 +12,11 @@ The source catalog is grouped around observed abuse rather than network type. Re
 
 | Area | Enabled source labels | What it contributes |
 | --- | ---: | --- |
-| Recent attacks and abuse | 26 | SSH, mail, web, SIP, FTP, bot, scanner, and short-window attacker signals |
+| Recent attacks and abuse | 25 | SSH, mail, web, SIP, FTP, bot, scanner, and short-window attacker signals |
 | Compromised or hostile hosts | 12 | Confirmed compromised IPs, botnet infrastructure, and hostile reputation feeds |
 | Active malware and C2 | 13 | abuse.ch, ThreatFox, SSLBL, C2IntelFeeds, Threatview, MalSilo, RomainMarcoux, Bitwire, and related C2 indicators |
 | Community and multi-sensor risk | 16 | Correlated reputation from CINSscore, IPsum, GreenSnow, AlienVault, DShield, ELLIO, AbuseIPDB mirrors, Bitwire, and hourly aggregates |
-| Brute-force and spam | 8 | SSH, POP3, mail, form spam, and abuse sources |
+| Brute-force and spam | 7 | SSH, POP3, mail, form spam, and abuse sources |
 | Cybercrime and bogon infrastructure | 7 | Spamhaus DROP/EDROP/ASNDROP and Team Cymru fullbogon prefixes |
 
 Trust mix:
@@ -25,7 +25,7 @@ Trust mix:
 | --- | ---: |
 | `aggregator` | 32 |
 | `curated` | 11 |
-| `community` | 15 |
+| `community` | 14 |
 | `authoritative` | 1 |
 
 ## Why Blackroute
@@ -189,7 +189,7 @@ The default configuration includes:
 - Team Cymru: IPv4 and IPv6 full bogon prefixes.
 - abuse.ch Feodo Tracker: active botnet C2 IPs.
 - SANS ISC DShield, GreenSnow, and IPsum for community risk signals.
-- Binary Defense Banlist, ThreatFox IOC IPs, abuse.ch SSLBL, C2IntelFeeds, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, James Brine, ELLIO, Rescure.me, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
+- Binary Defense Banlist, ThreatFox IOC IPs, abuse.ch SSLBL, C2IntelFeeds, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, ELLIO, Rescure.me, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
 
 Commercial feeds and API-key feeds are intentionally not bundled. Add them as private entries in `configs/feeds.yaml` when your license allows local redistribution or internal use.
 
