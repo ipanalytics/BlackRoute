@@ -159,3 +159,72 @@ feeds:
     infrastructure: [bogon]
     urls:
       - https://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
+
+  - kind: textlist
+    name: binary_defense_banlist
+    display_name: Binary Defense Banlist
+    trust: aggregator
+    threat: [recent_attack_any, bruteforce]
+    urls:
+      - https://www.binarydefense.com/banlist.txt
+
+  - kind: textlist
+    name: threatfox_ioc_ips
+    display_name: ThreatFox IOC IPs
+    trust: curated
+    threat: [malware_host_active, compromised_or_hostile_host]
+    classification: [c2_ioc]
+    urls:
+      - local/feeds/threatfox_ips.txt
+      - https://threatfox.abuse.ch/export/csv/ip-port/full
+
+  - kind: textlist
+    name: usom_blocklist_ips
+    display_name: USOM Malicious IPs
+    trust: community
+    threat: [compromised_or_hostile_host]
+    classification: [national_cert_malicious, malicious_url_or_ip]
+    urls:
+      - https://www.usom.gov.tr/url-list.txt
+
+  - kind: textlist
+    name: inversion_cloud_ips
+    display_name: Inversion Cloud IPs
+    trust: aggregator
+    infrastructure: [hosting]
+    classification: [cloud_hosting_abuse_derived]
+    urls:
+      - https://raw.githubusercontent.com/elliotwutingfeng/Inversion-CloudIPs/main/ips.txt
+
+  - kind: textlist
+    name: inversion_dnsbl_google_ipv4
+    display_name: Inversion DNSBL Google IPv4
+    trust: aggregator
+    threat: [compromised_or_hostile_host]
+    classification: [dnsbl_malicious, safe_browsing_malicious]
+    urls:
+      - https://raw.githubusercontent.com/elliotwutingfeng/Inversion-DNSBL-Blocklists/main/Google_ipv4.txt
+
+  - kind: textlist
+    name: ukrainian_ema_blocklist_ips
+    display_name: Ukrainian EMA Fraud IPs
+    trust: community
+    classification: [phishing_or_scam, financial_fraud]
+    urls:
+      - https://www.ema.com.ua/wp-json/api/blacklist-query?count=1000000
+
+  - kind: textlist
+    name: acma_blocked_gambling_ips
+    display_name: ACMA Blocked Gambling IPs
+    trust: community
+    classification: [policy_illegal_gambling]
+    urls:
+      - https://backend.acma.gov.au/gmbl/api/Domain
+
+  - kind: textlist
+    name: global_anti_scam_ips
+    display_name: Global Anti Scam IPs
+    trust: community
+    classification: [phishing_or_scam, scam_or_fraud]
+    urls:
+      - https://raw.githubusercontent.com/elliotwutingfeng/GlobalAntiScamOrg-blocklist/main/global-anti-scam-org-scam-ips.txt

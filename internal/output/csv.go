@@ -14,7 +14,7 @@ import (
 
 var CSVHeader = []string{
 	"ip", "source",
-	"threat", "infrastructure",
+	"threat", "infrastructure", "classification",
 	"confidence",
 }
 
@@ -41,6 +41,7 @@ func WriteCSV(path string, records []record.Record) error {
 			r.SourceName,
 			strings.Join(r.Threat, "|"),
 			strings.Join(r.Infrastructure, "|"),
+			strings.Join(r.Classification, "|"),
 			strconv.Itoa(r.Confidence),
 		}
 		if err := w.Write(row); err != nil {

@@ -24,6 +24,7 @@ type Record struct {
 	SourceURL      string    `json:"url,omitempty"`
 	Threat         []string  `json:"threat,omitempty"`
 	Infrastructure []string  `json:"infrastructure,omitempty"`
+	Classification []string  `json:"classification,omitempty"`
 	Confidence     int       `json:"confidence"`
 	LastSeen       time.Time `json:"last_seen"`
 }
@@ -39,6 +40,7 @@ func (r *Record) MergeWith(other Record) {
 	}
 	r.Threat = mergeStringSets(r.Threat, other.Threat)
 	r.Infrastructure = mergeStringSets(r.Infrastructure, other.Infrastructure)
+	r.Classification = mergeStringSets(r.Classification, other.Classification)
 	if other.LastSeen.After(r.LastSeen) {
 		r.LastSeen = other.LastSeen
 	}

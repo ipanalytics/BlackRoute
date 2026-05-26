@@ -15,6 +15,7 @@ type jsonRow struct {
 	Source         string   `json:"source,omitempty"`
 	Threat         []string `json:"threat,omitempty"`
 	Infrastructure []string `json:"infrastructure,omitempty"`
+	Classification []string `json:"classification,omitempty"`
 	Confidence     int      `json:"confidence"`
 }
 
@@ -24,6 +25,7 @@ func toJSONRow(r record.Record) jsonRow {
 		Source:         r.SourceName,
 		Threat:         r.Threat,
 		Infrastructure: r.Infrastructure,
+		Classification: r.Classification,
 		Confidence:     r.Confidence,
 	}
 }

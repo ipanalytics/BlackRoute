@@ -1,10 +1,13 @@
 package textlist
 
 import (
+	"archive/zip"
 	"bufio"
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"strings"
 	"time"
 
@@ -20,6 +23,7 @@ type Source struct {
 	kind           record.SourceKind
 	threat         []string
 	infrastructure []string
+	classification []string
 }
 
 type Config struct {
@@ -28,6 +32,7 @@ type Config struct {
 	Kind           record.SourceKind
 	Threat         []string
 	Infrastructure []string
+	Classification []string
 }
 
 func New(cfg Config, dl *downloader.Client) *Source {
@@ -41,6 +46,7 @@ func New(cfg Config, dl *downloader.Client) *Source {
 		kind:           cfg.Kind,
 		threat:         append([]string(nil), cfg.Threat...),
 		infrastructure: append([]string(nil), cfg.Infrastructure...),
+		classification: append([]string(nil), cfg.Classification...),
 	}
 }
 
@@ -64,8 +70,13 @@ func (s *Source) Fetch(ctx context.Context) ([]record.Record, error) {
 			lastErr = fmt.Errorf("%s: empty body", u)
 			continue
 		}
+		text, err := textBody(body)
+		if err != nil {
+			lastErr = fmt.Errorf("%s: %w", u, err)
+			continue
+		}
 		seen := make(map[string]struct{}, 1024)
-		sc := bufio.NewScanner(strings.NewReader(string(body)))
+		sc := bufio.NewScanner(strings.NewReader(text))
 		sc.Buffer(make([]byte, 0, 64*1024), 1024*1024)
 		for sc.Scan() {
 			line := stripComment(strings.TrimSpace(sc.Text()))
@@ -105,6 +116,32 @@ func (s *Source) Fetch(ctx context.Context) ([]record.Record, error) {
 	return out, nil
 }
 
+func textBody(body []byte) (string, error) {
+	if len(body) >= 4 && bytes.Equal(body[:4], []byte{'P', 'K', 3, 4}) {
+		zr, err := zip.NewReader(bytes.NewReader(body), int64(len(body)))
+		if err != nil {
+			return "", fmt.Errorf("open zip: %w", err)
+		}
+		for _, f := range zr.File {
+			if f.FileInfo().IsDir() {
+				continue
+			}
+			rc, err := f.Open()
+			if err != nil {
+				return "", fmt.Errorf("open zip member %s: %w", f.Name, err)
+			}
+			defer rc.Close()
+			raw, err := io.ReadAll(rc)
+			if err != nil {
+				return "", fmt.Errorf("read zip member %s: %w", f.Name, err)
+			}
+			return string(raw), nil
+		}
+		return "", errors.New("zip archive has no files")
+	}
+	return string(body), nil
+}
+
 func stripComment(line string) string {
 	if i := strings.Index(line, "#"); i != -1 {
 		return strings.TrimSpace(line[:i])
@@ -120,13 +157,20 @@ func extractIPTokens(line string) []string {
 	})
 	out := make([]string, 0, len(fields))
 	for _, f := range fields {
-		f = strings.Trim(f, "`()")
+		f = strings.Trim(f, "`()<>")
+		f = strings.TrimPrefix(f, "//")
 		if f == "" || f == "0.0.0.0" || f == "127.0.0.1" {
 			continue
 		}
 		if strings.Contains(f, "/") {
 			if domainx.NormalizePublicCIDR(f) != "" {
 				out = append(out, f)
+				continue
+			}
+			if host, _, ok := strings.Cut(f, "/"); ok {
+				if _, v := domainx.NormalizePublicIP(host); v != 0 {
+					out = append(out, host)
+				}
 			}
 			continue
 		}
@@ -146,5 +190,6 @@ func (s *Source) makeRecord(ip, sourceURL string, ts time.Time) record.Record {
 		LastSeen:       ts,
 		Threat:         append([]string(nil), s.threat...),
 		Infrastructure: append([]string(nil), s.infrastructure...),
+		Classification: append([]string(nil), s.classification...),
 	}
 }

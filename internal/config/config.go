@@ -25,6 +25,7 @@ type FeedDecl struct {
 	Trust          string   `yaml:"trust,omitempty"`
 	Threat         []string `yaml:"threat,omitempty"`
 	Infrastructure []string `yaml:"infrastructure,omitempty"`
+	Classification []string `yaml:"classification,omitempty"`
 }
 
 type Deps struct {
@@ -70,6 +71,7 @@ func buildFeed(p FeedDecl, deps Deps) (source.DataSource, error) {
 			Kind:           kind,
 			Threat:         p.Threat,
 			Infrastructure: p.Infrastructure,
+			Classification: p.Classification,
 		}, deps.Downloader), nil
 	default:
 		return nil, fmt.Errorf("unknown kind %q", p.Kind)

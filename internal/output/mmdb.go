@@ -91,6 +91,7 @@ func networkKey(ip string) string {
 func buildThreatMMDBEntry(networkKey string, rs []record.Record) mmdbtype.Map {
 	threats := map[string]struct{}{}
 	infra := map[string]struct{}{}
+	classes := map[string]struct{}{}
 	sources := map[string]struct{}{}
 	dom := &rs[0]
 	for i := range rs {
@@ -106,14 +107,18 @@ func buildThreatMMDBEntry(networkKey string, rs []record.Record) mmdbtype.Map {
 		for _, v := range r.Infrastructure {
 			addSet(infra, v)
 		}
+		for _, v := range r.Classification {
+			addSet(classes, v)
+		}
 		addSet(sources, r.SourceName)
 	}
 
-	score := threatScore(threats, infra)
+	score := threatScore(threats, infra, classes)
 	entry := mmdbtype.Map{
 		"matched_prefix":    mmdbtype.String(networkKey),
 		"threat":            stringSetSlice(threats),
 		"infrastructure":    stringSetSlice(infra),
+		"classification":    stringSetSlice(classes),
 		"sources":           stringSetSlice(sources),
 		"confidence":        mmdbtype.Uint16(uint16(dom.Confidence)),
 		"score":             mmdbtype.Uint16(uint16(score)),
@@ -146,13 +151,16 @@ func stringSetSlice(set map[string]struct{}) mmdbtype.Slice {
 	return mmdbtype.Slice(out)
 }
 
-func threatScore(threats, infra map[string]struct{}) int {
-	score := len(threats)*15 + len(infra)*10
-	for _, strong := range []string{"malware_host_active", "compromised_or_hostile_host", "persistent_attacker", "prefix_cybercrime", "asn_high_risk"} {
+func threatScore(threats, infra, classes map[string]struct{}) int {
+	score := len(threats)*15 + len(infra)*10 + len(classes)*6
+	for _, strong := range []string{"malware_host_active", "compromised_or_hostile_host", "persistent_attacker", "prefix_cybercrime", "asn_high_risk", "c2_ioc", "phishing_or_scam"} {
 		if _, ok := threats[strong]; ok {
 			score += 25
 		}
 		if _, ok := infra[strong]; ok {
+			score += 25
+		}
+		if _, ok := classes[strong]; ok {
 			score += 25
 		}
 	}

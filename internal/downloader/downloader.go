@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -17,6 +20,9 @@ func New() *Client {
 }
 
 func (c *Client) FetchBytes(ctx context.Context, url string) ([]byte, error) {
+	if isLocalPath(url) {
+		return os.ReadFile(strings.TrimPrefix(url, "file://"))
+	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -33,4 +39,18 @@ func (c *Client) FetchBytes(ctx context.Context, url string) ([]byte, error) {
 		return nil, fmt.Errorf("status %d", resp.StatusCode)
 	}
 	return io.ReadAll(resp.Body)
+}
+
+func isLocalPath(raw string) bool {
+	if raw == "" {
+		return false
+	}
+	if strings.HasPrefix(raw, "file://") {
+		return true
+	}
+	u, err := url.Parse(raw)
+	if err == nil && u.Scheme != "" {
+		return false
+	}
+	return strings.HasPrefix(raw, "/") || strings.HasPrefix(raw, "./") || strings.HasPrefix(raw, "../")
 }

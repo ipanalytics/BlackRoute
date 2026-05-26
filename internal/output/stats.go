@@ -19,6 +19,7 @@ type RunStats struct {
 	BySource         []CountRow `json:"by_source"`
 	ByThreat         []CountRow `json:"by_threat"`
 	ByInfrastructure []CountRow `json:"by_infrastructure"`
+	ByClassification []CountRow `json:"by_classification"`
 	AddedIPs         int        `json:"added_ips"`
 	RemovedIPs       int        `json:"removed_ips"`
 }
@@ -63,6 +64,7 @@ func buildStats(records []record.Record) RunStats {
 	bySource := map[string]int{}
 	byThreat := map[string]int{}
 	byInfra := map[string]int{}
+	byClass := map[string]int{}
 
 	for _, r := range records {
 		ips[r.IP] = struct{}{}
@@ -78,6 +80,9 @@ func buildStats(records []record.Record) RunStats {
 		for _, v := range r.Infrastructure {
 			byInfra[v]++
 		}
+		for _, v := range r.Classification {
+			byClass[v]++
+		}
 	}
 
 	return RunStats{
@@ -88,6 +93,7 @@ func buildStats(records []record.Record) RunStats {
 		BySource:         countRows(bySource),
 		ByThreat:         countRows(byThreat),
 		ByInfrastructure: countRows(byInfra),
+		ByClassification: countRows(byClass),
 	}
 }
 
