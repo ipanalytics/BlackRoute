@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blackroute — Local IP Reputation Database</title>
-  <meta name="description" content="Blackroute builds a local MaxMind-compatible IP reputation database from public abuse, malware, bot, bogon, and high-risk infrastructure feeds.">
+  <meta name="description" content="Blackroute builds a local MaxMind-compatible IP reputation database from 59 public abuse, malware, C2, spam, phishing, bogon, and cybercrime-prefix feeds.">
 
   <meta property="og:title" content="Blackroute">
   <meta property="og:description" content="Local IP reputation database. Public feeds in. Clean MMDB out.">
@@ -56,7 +56,7 @@
 
 <pre><code>$ ./run.sh
 
-Loaded feeds: 42
+Loaded feeds: 59
 Merging IPs and CIDR prefixes...
 Writing records...
 Building MMDB...
@@ -107,8 +107,8 @@ Build complete.</code></pre>
         <div class="card">
           <h3>Collects public feeds</h3>
           <p>
-            Abuse, malware, bot, bogon,
-            anonymous, and high-risk infrastructure sources.
+            Abuse, malware, C2, spam,
+            phishing, bogon, and cybercrime-prefix sources.
           </p>
         </div>
 

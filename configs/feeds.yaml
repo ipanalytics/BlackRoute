@@ -80,14 +80,6 @@ feeds:
       - https://cinsscore.com/list/ci-badguys.txt
 
   - kind: textlist
-    name: firehol_anonymous
-    display_name: FireHOL Anonymous
-    trust: aggregator
-    infrastructure: [aggregate_anonymizer]
-    urls:
-      - https://iplists.firehol.org/files/firehol_anonymous.netset
-
-  - kind: textlist
     name: firehol_abusers_1d
     display_name: FireHOL Abusers 1d
     trust: aggregator
@@ -265,3 +257,263 @@ feeds:
     classification: [aggregate_threat_intel_hourly]
     urls:
       - https://raw.githubusercontent.com/ziyadnz/threat-intel-ip-feeds/main/output/hourlyIPv4.txt
+
+  - kind: textlist
+    name: abusech_sslbl
+    display_name: abuse.ch SSL Blacklist
+    trust: curated
+    threat: [malware_host_active, c2_ioc]
+    classification: [botnet_c2_ssl]
+    urls:
+      - https://sslbl.abuse.ch/blacklist/sslipblacklist.txt
+
+  - kind: textlist
+    name: c2intel_30day
+    display_name: C2IntelFeeds 30-Day C2 IPs
+    trust: curated
+    threat: [c2_ioc, malware_host_active]
+    classification: [c2_ioc]
+    urls:
+      - https://raw.githubusercontent.com/drb-ra/C2IntelFeeds/master/feeds/IPC2s-30day.csv
+
+  - kind: textlist
+    name: c2intel_current
+    display_name: C2IntelFeeds Current C2 IPs
+    trust: curated
+    threat: [c2_ioc, malware_host_active]
+    classification: [c2_ioc]
+    urls:
+      - https://raw.githubusercontent.com/drb-ra/C2IntelFeeds/master/feeds/IPC2s.csv
+
+  - kind: textlist
+    name: spamhaus_edrop
+    display_name: Spamhaus EDROP
+    trust: curated
+    infrastructure: [prefix_cybercrime]
+    threat: [compromised_or_hostile_host]
+    urls:
+      - https://www.spamhaus.org/drop/edrop.txt
+
+  - kind: textlist
+    name: spamhaus_dropv6
+    display_name: Spamhaus DROP IPv6
+    trust: curated
+    infrastructure: [prefix_cybercrime]
+    threat: [compromised_or_hostile_host]
+    urls:
+      - https://www.spamhaus.org/drop/dropv6.txt
+
+  - kind: textlist
+    name: firehol_level1
+    display_name: FireHOL Level 1
+    trust: aggregator
+    threat: [persistent_attacker, compromised_or_hostile_host]
+    classification: [ultra_conservative_aggregate]
+    urls:
+      - https://iplists.firehol.org/files/firehol_level1.netset
+
+  - kind: textlist
+    name: ipsum_level1
+    display_name: IPsum Level 1
+    trust: aggregator
+    threat: [persistent_attacker]
+    classification: [aggregate_threat_intel]
+    urls:
+      - https://raw.githubusercontent.com/stamparm/ipsum/master/levels/1.txt
+
+  - kind: textlist
+    name: stopforumspam_toxic
+    display_name: StopForumSpam Toxic CIDRs
+    trust: community
+    threat: [spam, abuse]
+    classification: [spam_source]
+    urls:
+      - https://www.stopforumspam.com/downloads/toxic_ip_cidr.txt
+
+  - kind: textlist
+    name: blocklist_de_postfix
+    display_name: blocklist.de Postfix
+    trust: aggregator
+    threat: [recent_attack_any, recent_attack_mail]
+    urls:
+      - https://lists.blocklist.de/lists/postfix.txt
+
+  - kind: textlist
+    name: blocklist_net_ua
+    display_name: Blocklist.net.ua
+    trust: community
+    threat: [recent_attack_any, spam, bruteforce]
+    classification: [national_cert_malicious, spam_source, brute_force]
+    urls:
+      - https://blocklist.net.ua/blocklist.csv
+
+  - kind: textlist
+    name: threatview_c2_hunt
+    display_name: Threatview.io C2 Hunt Feed
+    trust: curated
+    threat: [c2_ioc, malware_host_active]
+    classification: [cobalt_strike_c2, command_and_control]
+    urls:
+      - https://threatview.io/Downloads/High-Confidence-CobaltStrike-C2%20-Feeds.txt
+
+  - kind: textlist
+    name: threatview_ip_blocklist
+    display_name: Threatview.io IP Blocklist
+    trust: curated
+    threat: [compromised_or_hostile_host, malware_host_active]
+    classification: [aggregate_threat_intel]
+    urls:
+      - https://threatview.io/Downloads/IP-High-Confidence-Feed.txt
+
+  - kind: textlist
+    name: malsilo_ipv4
+    display_name: MalSilo IPv4 Feed
+    trust: curated
+    threat: [malware_host_active, c2_ioc]
+    classification: [malware_distribution, c2_ioc]
+    urls:
+      - https://malsilo.gitlab.io/feeds/dumps/ip_list.txt
+
+  - kind: textlist
+    name: james_brine_bruteforce
+    display_name: James Brine Bruteforce IPs
+    trust: community
+    threat: [recent_attack_any, bruteforce]
+    classification: [ssh_bruteforce, ftp_bruteforce, rdp_bruteforce, telnet_bruteforce]
+    urls:
+      - https://jamesbrine.com.au/csv
+
+  - kind: textlist
+    name: ellio_community
+    display_name: ELLIO IP Feed Community
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk]
+    classification: [aggregate_threat_intel_hourly]
+    urls:
+      - https://cdn.ellio.tech/community-feed
+
+  - kind: textlist
+    name: rescure_blacklist
+    display_name: Rescure.me Blacklist
+    trust: aggregator
+    threat: [compromised_or_hostile_host, malware_host_active]
+    classification: [aggregate_threat_intel]
+    urls:
+      - https://rescure.me/rescure_blacklist.txt
+
+  - kind: textlist
+    name: rutgers_attackers
+    display_name: Rutgers University Attackers
+    trust: community
+    threat: [recent_attack_any]
+    classification: [university_honeypot_attacker]
+    urls:
+      - https://report.cs.rutgers.edu/DROP/attackers
+
+  - kind: textlist
+    name: bruteforceblocker
+    display_name: BruteForceBlocker SSH
+    trust: community
+    threat: [recent_attack_any, bruteforce]
+    classification: [ssh_bruteforce]
+    urls:
+      - http://danger.rulez.sk/projects/bruteforceblocker/blist.php
+
+  - kind: textlist
+    name: pop3gropers
+    display_name: POP3 Gropers
+    trust: community
+    threat: [recent_attack_any, bruteforce]
+    classification: [pop3_bruteforce, mail_bruteforce]
+    urls:
+      - https://home.nuug.no/~peter/pop3gropers.txt
+
+  - kind: textlist
+    name: phishing_database_ips
+    display_name: Phishing.Database Active IPs
+    trust: community
+    threat: [phishing_or_scam, compromised_or_hostile_host]
+    classification: [phishing_ip]
+    urls:
+      - https://raw.githubusercontent.com/Phishing-Database/Phishing.Database/master/phishing-IPs-ACTIVE.txt
+
+  - kind: textlist
+    name: abuseipdb_s100_1d
+    display_name: AbuseIPDB Confidence 100% 1-Day
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk]
+    classification: [aggregate_abuseipdb_confidence_100]
+    urls:
+      - https://raw.githubusercontent.com/borestad/blocklist-abuseipdb/main/abuseipdb-s100-1d.ipv4
+
+  - kind: textlist
+    name: abuseipdb_s100_7d
+    display_name: AbuseIPDB Confidence 100% 7-Day
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk]
+    classification: [aggregate_abuseipdb_confidence_100]
+    urls:
+      - https://raw.githubusercontent.com/borestad/blocklist-abuseipdb/main/abuseipdb-s100-7d.ipv4
+
+  - kind: textlist
+    name: abuseipdb_s100_30d
+    display_name: AbuseIPDB Confidence 100% 30-Day
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk]
+    classification: [aggregate_abuseipdb_confidence_100]
+    urls:
+      - https://raw.githubusercontent.com/borestad/blocklist-abuseipdb/main/abuseipdb-s100-30d.ipv4
+
+  - kind: textlist
+    name: romainmarcoux_inbound_40k
+    display_name: RomainMarcoux Inbound Top 40K
+    trust: aggregator
+    threat: [recent_attack_any, bruteforce, malware_host_active]
+    classification: [aggregate_inbound_threat]
+    urls:
+      - https://raw.githubusercontent.com/romainmarcoux/malicious-ip/main/full-40k.txt
+
+  - kind: textlist
+    name: romainmarcoux_outgoing_40k
+    display_name: RomainMarcoux Outbound Top 40K
+    trust: aggregator
+    threat: [c2_ioc, malware_host_active, phishing_or_scam]
+    classification: [aggregate_outbound_threat]
+    urls:
+      - https://raw.githubusercontent.com/romainmarcoux/malicious-outgoing-ip/main/full-outgoing-ip-40k.txt
+
+  - kind: textlist
+    name: shadowwhisperer_scanners
+    display_name: ShadowWhisperer Known Scanners
+    trust: community
+    threat: [recent_attack_any, network_scan_or_abuse]
+    classification: [internet_scanner, reconnaissance]
+    urls:
+      - https://raw.githubusercontent.com/ShadowWhisperer/IPs/master/Other/Scanners
+
+  - kind: textlist
+    name: ipblocklist_level3
+    display_name: IP BlockList v4 Level 3+
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk]
+    classification: [aggregate_blacklist_scored]
+    urls:
+      - https://raw.githubusercontent.com/scriptzteam/IP-BlockList-v4/master/levels/3.txt
+
+  - kind: textlist
+    name: bitwire_inbound
+    display_name: Bitwire Inbound Blocklist
+    trust: aggregator
+    threat: [recent_attack_any, community_high_risk, malware_host_active]
+    classification: [aggregate_threat_intel]
+    urls:
+      - https://raw.githubusercontent.com/bitwire-it/ipblocklist/main/inbound.txt
+
+  - kind: textlist
+    name: bitwire_outbound
+    display_name: Bitwire Outbound Blocklist
+    trust: aggregator
+    threat: [c2_ioc, malware_host_active, phishing_or_scam]
+    classification: [aggregate_threat_intel]
+    urls:
+      - https://raw.githubusercontent.com/bitwire-it/ipblocklist/main/outbound.txt

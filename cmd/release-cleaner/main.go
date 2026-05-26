@@ -22,7 +22,11 @@ type cleanupStats struct {
 	GeneratedAt       string         `json:"generated_at"`
 	Policy            string         `json:"policy"`
 	InputRecords      int            `json:"input_records"`
+	InputIPs          int            `json:"input_ips"`
+	InputCIDRs        int            `json:"input_cidrs"`
 	OutputRecords     int            `json:"output_records"`
+	OutputIPs         int            `json:"output_ips"`
+	OutputCIDRs       int            `json:"output_cidrs"`
 	RemovedRecords    int            `json:"removed_records"`
 	EnabledSources    int            `json:"enabled_sources"`
 	RemainingSources  int            `json:"remaining_sources"`
@@ -133,9 +137,19 @@ func cleanRecords(records []record.Record) ([]record.Record, cleanupStats) {
 
 	out := make([]record.Record, 0, len(records))
 	for _, r := range records {
+		if isCIDR(r.IP) {
+			stats.InputCIDRs++
+		} else {
+			stats.InputIPs++
+		}
 		if reason := removalReason(r.IP); reason != "" {
 			stats.RemovedByReason[reason]++
 			continue
+		}
+		if isCIDR(r.IP) {
+			stats.OutputCIDRs++
+		} else {
+			stats.OutputIPs++
 		}
 		out = append(out, r)
 		addCounts(stats.RemainingBySource, []string{sourceName(r.SourceName)})
@@ -147,6 +161,10 @@ func cleanRecords(records []record.Record) ([]record.Record, cleanupStats) {
 	stats.OutputRecords = len(out)
 	stats.RemovedRecords = stats.InputRecords - stats.OutputRecords
 	return out, stats
+}
+
+func isCIDR(raw string) bool {
+	return strings.Contains(strings.TrimSpace(raw), "/")
 }
 
 func removalReason(raw string) string {
@@ -188,8 +206,12 @@ func writeSummary(path string, stats cleanupStats) error {
 	fmt.Fprintf(&b, "- Configured sources: `%d`\n", stats.EnabledSources)
 	fmt.Fprintf(&b, "- Sources remaining after cleanup: `%d`\n", stats.RemainingSources)
 	fmt.Fprintf(&b, "- Records before cleanup: `%d`\n", stats.InputRecords)
+	fmt.Fprintf(&b, "- Single IPs before cleanup: `%d`\n", stats.InputIPs)
+	fmt.Fprintf(&b, "- CIDR prefixes before cleanup: `%d`\n", stats.InputCIDRs)
 	fmt.Fprintf(&b, "- Records removed by cleanup: `%d`\n", stats.RemovedRecords)
 	fmt.Fprintf(&b, "- Records published: `%d`\n", stats.OutputRecords)
+	fmt.Fprintf(&b, "- Single IPs published: `%d`\n", stats.OutputIPs)
+	fmt.Fprintf(&b, "- CIDR prefixes published: `%d`\n", stats.OutputCIDRs)
 	b.WriteString("\n## Cleanup Policy\n\n")
 	b.WriteString("- Removed invalid IPs and CIDRs.\n")
 	b.WriteString("- Removed private, loopback, link-local, multicast, unspecified, CGNAT, reserved, and overly broad bogon prefixes.\n")

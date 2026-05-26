@@ -1,10 +1,32 @@
 # Blackroute
 
-Blackroute builds a local IP reputation database from public abuse, malware, bot, bogon, and high-risk infrastructure feeds. The primary artifact is `blackroute.mmdb`, a MaxMind-compatible database that can be used in gateways, proxies, fraud checks, SIEM pipelines, and internal enrichment jobs.
+Blackroute builds a local IP reputation database from public abuse, malware, botnet C2, spam, phishing, brute-force, bogon, and cybercrime-prefix feeds. The primary artifact is `blackroute.mmdb`, a MaxMind-compatible database that can be used in gateways, proxies, fraud checks, SIEM pipelines, and internal enrichment jobs.
 
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
-The default catalog currently contains 31 enabled IP/CIDR sources.
+The default catalog currently contains 59 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
+
+## Dataset Coverage
+
+The source catalog is grouped around observed abuse rather than network type. Release artifacts include exact post-cleanup counts for records, single IPs, CIDR prefixes, sources, threat labels, infrastructure labels, and classification labels.
+
+| Area | Enabled source labels | What it contributes |
+| --- | ---: | --- |
+| Recent attacks and abuse | 26 | SSH, mail, web, SIP, FTP, bot, scanner, and short-window attacker signals |
+| Compromised or hostile hosts | 12 | Confirmed compromised IPs, botnet infrastructure, and hostile reputation feeds |
+| Active malware and C2 | 13 | abuse.ch, ThreatFox, SSLBL, C2IntelFeeds, Threatview, MalSilo, RomainMarcoux, Bitwire, and related C2 indicators |
+| Community and multi-sensor risk | 16 | Correlated reputation from CINSscore, IPsum, GreenSnow, AlienVault, DShield, ELLIO, AbuseIPDB mirrors, Bitwire, and hourly aggregates |
+| Brute-force and spam | 8 | SSH, POP3, mail, form spam, and abuse sources |
+| Cybercrime and bogon infrastructure | 7 | Spamhaus DROP/EDROP/ASNDROP and Team Cymru fullbogon prefixes |
+
+Trust mix:
+
+| Trust level | Enabled sources |
+| --- | ---: |
+| `aggregator` | 32 |
+| `curated` | 11 |
+| `community` | 15 |
+| `authoritative` | 1 |
 
 ## Why Blackroute
 
@@ -21,7 +43,7 @@ The default catalog currently contains 31 enabled IP/CIDR sources.
 | `release/blackroute.mmdb` | MaxMind DB for runtime IP and prefix lookups |
 | `release/blackroute.csv` | Flat table for review, diffing, and import jobs |
 | `release/blackroute.jsonl` | Line-delimited records for pipelines |
-| `release/run_stats.json` | Build summary and label counts |
+| `release/run_stats.json` | Build summary, IP/CIDR counts, and label counts |
 
 MMDB records use this shape:
 
@@ -89,7 +111,7 @@ The release workflow runs daily at 03:17 UTC and can also be started manually fr
 - `blackroute_<YYYY.MM.DD>_release_summary.md`
 - `checksums.txt`
 
-Release artifacts are cleaned before publication with [BogonForge](https://github.com/ipanalytics/BogonForge)-compatible public IP filtering. The release summary reports configured source count, source count after cleanup, records before cleanup, records removed as bogon/reserved/invalid, and records left in the published database.
+Release artifacts are cleaned before publication with [BogonForge](https://github.com/ipanalytics/BogonForge)-compatible public IP filtering. The release summary reports configured source count, source count after cleanup, records before cleanup, single IP and CIDR counts, records removed as bogon/reserved/invalid, and records left in the published database.
 
 Build a local ThreatFox IP feed directly from the public abuse.ch export:
 
@@ -151,7 +173,7 @@ Supported fields:
 | `disabled` | Set to `true` to keep a feed configured but inactive |
 | `trust` | `aggregator`, `community`, `curated`, or `authoritative`; controls default confidence |
 | `threat` | Labels for hostile behavior or active reputation |
-| `infrastructure` | Labels for network context such as bogons, anonymous infrastructure, or high-risk prefixes |
+| `infrastructure` | Labels for network context such as bogons, hosting, cybercrime prefixes, or high-risk ASNs |
 | `classification` | Labels for source-specific category context such as scam, policy, C2, DNSBL, or national CERT signals |
 | `urls` | One or more feed URLs |
 
@@ -162,12 +184,12 @@ The default configuration includes:
 - blocklist.de: SSH, mail, web, IMAP, FTP, SIP, bots, and strong IP lists.
 - Emerging Threats: compromised and hostile hosts.
 - CINSscore: multi-sensor high-risk addresses.
-- FireHOL: anonymous infrastructure and 1-day abuser aggregation.
-- Spamhaus: DROP and ASNDROP-derived high-risk infrastructure.
+- FireHOL: conservative attacker and 1-day abuser aggregation.
+- Spamhaus: DROP, EDROP, DROPv6, and ASNDROP-derived high-risk infrastructure.
 - Team Cymru: IPv4 and IPv6 full bogon prefixes.
 - abuse.ch Feodo Tracker: active botnet C2 IPs.
 - SANS ISC DShield, GreenSnow, and IPsum for community risk signals.
-- Binary Defense Banlist, ThreatFox IOC IPs, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, and ZiyadNZ hourly aggregate IPs.
+- Binary Defense Banlist, ThreatFox IOC IPs, abuse.ch SSLBL, C2IntelFeeds, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, James Brine, ELLIO, Rescure.me, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
 
 Commercial feeds and API-key feeds are intentionally not bundled. Add them as private entries in `configs/feeds.yaml` when your license allows local redistribution or internal use.
 
@@ -192,7 +214,13 @@ Threat labels describe behavior:
   "compromised_or_hostile_host",
   "community_high_risk",
   "multi_sensor_high_risk",
-  "aggregate_abuser_1d"
+  "aggregate_abuser_1d",
+  "c2_ioc",
+  "bruteforce",
+  "spam",
+  "abuse",
+  "phishing_or_scam",
+  "network_scan_or_abuse"
 ]
 ```
 
@@ -200,7 +228,6 @@ Infrastructure labels describe network context:
 
 ```json
 [
-  "aggregate_anonymizer",
   "hosting",
   "bogon",
   "prefix_cybercrime",
@@ -224,7 +251,21 @@ Classification labels describe source category without forcing everything into `
   "scam_or_fraud",
   "alienvault_otx_reputation",
   "network_scan_or_abuse",
-  "aggregate_threat_intel_hourly"
+  "aggregate_threat_intel_hourly",
+  "botnet_c2_ssl",
+  "cobalt_strike_c2",
+  "command_and_control",
+  "malware_distribution",
+  "ssh_bruteforce",
+  "mail_bruteforce",
+  "phishing_ip",
+  "spam_source",
+  "aggregate_abuseipdb_confidence_100",
+  "aggregate_blacklist_scored",
+  "aggregate_inbound_threat",
+  "aggregate_outbound_threat",
+  "internet_scanner",
+  "reconnaissance"
 ]
 ```
 

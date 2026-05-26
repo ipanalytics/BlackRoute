@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"blackroute/internal/record"
@@ -15,6 +16,8 @@ type RunStats struct {
 	GeneratedAt      string     `json:"generated_at"`
 	TotalRecords     int        `json:"total_records"`
 	UniqueIPs        int        `json:"unique_ips"`
+	SingleIPs        int        `json:"single_ips"`
+	CIDRPrefixes     int        `json:"cidr_prefixes"`
 	UniqueSources    int        `json:"unique_sources"`
 	BySource         []CountRow `json:"by_source"`
 	ByThreat         []CountRow `json:"by_threat"`
@@ -65,9 +68,16 @@ func buildStats(records []record.Record) RunStats {
 	byThreat := map[string]int{}
 	byInfra := map[string]int{}
 	byClass := map[string]int{}
+	byIP := 0
+	byCIDR := 0
 
 	for _, r := range records {
 		ips[r.IP] = struct{}{}
+		if strings.Contains(r.IP, "/") {
+			byCIDR++
+		} else {
+			byIP++
+		}
 		src := r.SourceName
 		if src == "" {
 			src = "unknown"
@@ -89,6 +99,8 @@ func buildStats(records []record.Record) RunStats {
 		GeneratedAt:      time.Now().UTC().Format(time.RFC3339),
 		TotalRecords:     len(records),
 		UniqueIPs:        len(ips),
+		SingleIPs:        byIP,
+		CIDRPrefixes:     byCIDR,
 		UniqueSources:    len(sources),
 		BySource:         countRows(bySource),
 		ByThreat:         countRows(byThreat),

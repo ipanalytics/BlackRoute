@@ -14,7 +14,7 @@ func TestThreatMMDBEntryMergesSignals(t *testing.T) {
 			IP:             "192.0.2.1",
 			SourceName:     "blocklist_de_ssh",
 			Threat:         []string{"recent_attack_any", "recent_attack_ssh"},
-			Infrastructure: []string{"aggregate_anonymizer"},
+			Infrastructure: []string{"prefix_cybercrime"},
 			Confidence:     55,
 			LastSeen:       time.Now(),
 		},
@@ -35,7 +35,7 @@ func TestThreatMMDBEntryMergesSignals(t *testing.T) {
 		t.Fatalf("threat len = %d, want 3: %#v", len(threats), threats)
 	}
 	infra := entry["infrastructure"].(mmdbtype.Slice)
-	if len(infra) != 1 || string(infra[0].(mmdbtype.String)) != "aggregate_anonymizer" {
-		t.Fatalf("infrastructure = %#v, want [aggregate_anonymizer]", infra)
+	if len(infra) != 1 || string(infra[0].(mmdbtype.String)) != "prefix_cybercrime" {
+		t.Fatalf("infrastructure = %#v, want [prefix_cybercrime]", infra)
 	}
 }
