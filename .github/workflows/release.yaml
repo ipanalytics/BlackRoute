@@ -1,91 +1,16 @@
-name: Release binaries
+name: Release database
 
 on:
-  push:
-    tags:
-      - "v*"
+  schedule:
+    - cron: "17 3 * * *"
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Release tag, for example v0.1.0"
-        required: true
-        type: string
-      prerelease:
-        description: "Mark release as prerelease"
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - goos: linux
-            goarch: amd64
-          - goos: linux
-            goarch: arm64
-          - goos: darwin
-            goarch: amd64
-          - goos: darwin
-            goarch: arm64
-          - goos: windows
-            goarch: amd64
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-          cache: true
-
-      - name: Resolve version
-        id: version
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-            echo "value=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Build binary
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: "0"
-          VERSION: ${{ steps.version.outputs.value }}
-        run: |
-          set -euo pipefail
-          mkdir -p dist
-          name="blackroute_${VERSION}_${GOOS}_${GOARCH}"
-          binary="blackroute"
-          if [ "$GOOS" = "windows" ]; then
-            binary="blackroute.exe"
-          fi
-          go build -trimpath -ldflags="-s -w" -o "dist/${binary}" ./cmd/collector
-          cp README.md LICENSE configs/feeds.yaml dist/
-          if [ "$GOOS" = "windows" ]; then
-            (cd dist && zip -q "../${name}.zip" "$binary" README.md LICENSE feeds.yaml)
-          else
-            tar -czf "${name}.tar.gz" -C dist "$binary" README.md LICENSE feeds.yaml
-          fi
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: blackroute-${{ steps.version.outputs.value }}-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: |
-            blackroute_*.tar.gz
-            blackroute_*.zip
-          if-no-files-found: error
-
   database:
-    name: Build database artifacts
+    name: Build and publish database
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -95,20 +20,20 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Resolve version
-        id: version
+      - name: Resolve release tag
+        id: release
         run: |
-          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-            echo "value=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-          fi
+          day="$(date -u +'%Y.%m.%d')"
+          echo "tag=$day" >> "$GITHUB_OUTPUT"
+          echo "name=Blackroute $day" >> "$GITHUB_OUTPUT"
 
       - name: Build Blackroute database
         env:
-          VERSION: ${{ steps.version.outputs.value }}
+          VERSION: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
+          mkdir -p dist
+
           go build -trimpath -ldflags="-s -w" -o ./bin/blackroute ./cmd/collector
           ./bin/blackroute --feeds=configs/feeds.yaml --output=release
 
@@ -117,46 +42,10 @@ jobs:
           test -s release/blackroute.jsonl
           test -s release/run_stats.json
 
-          cp release/blackroute.mmdb "blackroute_${VERSION}_database.mmdb"
-          cp release/blackroute.csv "blackroute_${VERSION}_records.csv"
-          cp release/blackroute.jsonl "blackroute_${VERSION}_records.jsonl"
-          cp release/run_stats.json "blackroute_${VERSION}_run_stats.json"
-          tar -czf "blackroute_${VERSION}_database.tar.gz" -C release \
-            blackroute.mmdb blackroute.csv blackroute.jsonl run_stats.json
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: blackroute-${{ steps.version.outputs.value }}-database
-          path: |
-            blackroute_*_database.tar.gz
-            blackroute_*_database.mmdb
-            blackroute_*_records.csv
-            blackroute_*_records.jsonl
-            blackroute_*_run_stats.json
-          if-no-files-found: error
-
-  publish:
-    name: Publish GitHub release
-    needs:
-      - build
-      - database
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: dist
-          merge-multiple: true
-
-      - name: Resolve release tag
-        id: release
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-            echo "prerelease=${{ inputs.prerelease }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
-          fi
+          cp release/blackroute.mmdb "dist/blackroute_${VERSION}.mmdb"
+          cp release/run_stats.json "dist/blackroute_${VERSION}_run_stats.json"
+          tar -czf "dist/blackroute_${VERSION}_exports.tar.gz" -C release \
+            blackroute.csv blackroute.jsonl run_stats.json
 
       - name: Checksums
         run: |
@@ -169,8 +58,19 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.release.outputs.tag }}
-          name: Blackroute ${{ steps.release.outputs.tag }}
-          prerelease: ${{ steps.release.outputs.prerelease }}
-          generate_release_notes: true
+          name: ${{ steps.release.outputs.name }}
+          prerelease: false
+          make_latest: true
+          body: |
+            Daily Blackroute database build.
+
+            Assets:
+            - `blackroute_${{ steps.release.outputs.tag }}.mmdb`
+            - `blackroute_${{ steps.release.outputs.tag }}_exports.tar.gz`
+            - `blackroute_${{ steps.release.outputs.tag }}_run_stats.json`
+            - `checksums.txt`
           files: |
-            dist/*
+            dist/blackroute_*.mmdb
+            dist/blackroute_*_exports.tar.gz
+            dist/blackroute_*_run_stats.json
+            dist/checksums.txt
