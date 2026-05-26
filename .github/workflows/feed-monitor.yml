@@ -13,4 +13,4 @@ jobs:
       - name: Check feed availability
         env:
           MAX_FEED_AGE_HOURS: "168"
-        run: scripts/check-feeds.sh
+        run: bash scripts/check-feeds.sh
