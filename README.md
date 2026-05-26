@@ -4,6 +4,8 @@ Blackroute builds a local IP reputation database from public abuse, malware, bot
 
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
+The default catalog currently contains 31 enabled IP/CIDR sources.
+
 ## Why Blackroute
 
 - Transparent source mapping: every record keeps the feed name, source URL, confidence, threat labels, and infrastructure labels.
@@ -83,7 +85,11 @@ The release workflow runs daily at 03:17 UTC and can also be started manually fr
 - `blackroute_<YYYY.MM.DD>.mmdb`
 - `blackroute_<YYYY.MM.DD>_exports.tar.gz` with CSV, JSONL, and run stats
 - `blackroute_<YYYY.MM.DD>_run_stats.json`
+- `blackroute_<YYYY.MM.DD>_cleanup_stats.json`
+- `blackroute_<YYYY.MM.DD>_release_summary.md`
 - `checksums.txt`
+
+Release artifacts are cleaned before publication with [BogonForge](https://github.com/ipanalytics/BogonForge)-compatible public IP filtering. The release summary reports configured source count, source count after cleanup, records before cleanup, records removed as bogon/reserved/invalid, and records left in the published database.
 
 Build a local ThreatFox IP feed directly from the public abuse.ch export:
 
