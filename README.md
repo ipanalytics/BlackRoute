@@ -4,7 +4,7 @@ Blackroute builds a local IP reputation database from public abuse, malware, bot
 
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
-The default catalog currently contains 58 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
+The default catalog currently contains 52 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
 
 ## Dataset Coverage
 
@@ -12,20 +12,20 @@ The source catalog is grouped around observed abuse rather than network type. Re
 
 | Area | Enabled source labels | What it contributes |
 | --- | ---: | --- |
-| Recent attacks and abuse | 25 | SSH, mail, web, SIP, FTP, bot, scanner, and short-window attacker signals |
-| Compromised or hostile hosts | 12 | Confirmed compromised IPs, botnet infrastructure, and hostile reputation feeds |
-| Active malware and C2 | 13 | abuse.ch, ThreatFox, SSLBL, C2IntelFeeds, Threatview, MalSilo, RomainMarcoux, Bitwire, and related C2 indicators |
-| Community and multi-sensor risk | 16 | Correlated reputation from CINSscore, IPsum, GreenSnow, AlienVault, DShield, ELLIO, AbuseIPDB mirrors, Bitwire, and hourly aggregates |
+| Recent attacks and abuse | 24 | SSH, mail, web, SIP, FTP, bot, scanner, and short-window attacker signals |
+| Compromised or hostile hosts | 10 | Confirmed compromised IPs, botnet infrastructure, and hostile reputation feeds |
+| Active malware and C2 | 11 | abuse.ch, ThreatFox, C2IntelFeeds, Threatview, MalSilo, RomainMarcoux, Bitwire, and related C2 indicators |
+| Community and multi-sensor risk | 15 | Correlated reputation from CINSscore, IPsum, GreenSnow, AlienVault, DShield, AbuseIPDB mirrors, Bitwire, and hourly aggregates |
 | Brute-force and spam | 7 | SSH, POP3, mail, form spam, and abuse sources |
-| Cybercrime and bogon infrastructure | 7 | Spamhaus DROP/EDROP/ASNDROP and Team Cymru fullbogon prefixes |
+| Cybercrime and bogon infrastructure | 4 | Spamhaus DROP/DROPv6 and Team Cymru fullbogon prefixes |
 
 Trust mix:
 
 | Trust level | Enabled sources |
 | --- | ---: |
-| `aggregator` | 32 |
-| `curated` | 11 |
-| `community` | 14 |
+| `aggregator` | 29 |
+| `curated` | 9 |
+| `community` | 13 |
 | `authoritative` | 1 |
 
 ## Why Blackroute
@@ -185,11 +185,11 @@ The default configuration includes:
 - Emerging Threats: compromised and hostile hosts.
 - CINSscore: multi-sensor high-risk addresses.
 - FireHOL: conservative attacker and 1-day abuser aggregation.
-- Spamhaus: DROP, EDROP, DROPv6, and ASNDROP-derived high-risk infrastructure.
+- Spamhaus: DROP and DROPv6 cybercrime prefixes.
 - Team Cymru: IPv4 and IPv6 full bogon prefixes.
 - abuse.ch Feodo Tracker: active botnet C2 IPs.
 - SANS ISC DShield, GreenSnow, and IPsum for community risk signals.
-- Binary Defense Banlist, ThreatFox IOC IPs, abuse.ch SSLBL, C2IntelFeeds, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, ELLIO, Rescure.me, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
+- Binary Defense Banlist, ThreatFox IOC IPs, C2IntelFeeds, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
 
 Commercial feeds and API-key feeds are intentionally not bundled. Add them as private entries in `configs/feeds.yaml` when your license allows local redistribution or internal use.
 
@@ -252,7 +252,6 @@ Classification labels describe source category without forcing everything into `
   "alienvault_otx_reputation",
   "network_scan_or_abuse",
   "aggregate_threat_intel_hourly",
-  "botnet_c2_ssl",
   "cobalt_strike_c2",
   "command_and_control",
   "malware_distribution",

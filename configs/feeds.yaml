@@ -88,14 +88,6 @@ feeds:
       - https://iplists.firehol.org/files/firehol_abusers_1d.netset
 
   - kind: textlist
-    name: spamhaus_asndrop
-    display_name: Spamhaus ASNDROP
-    trust: aggregator
-    infrastructure: [prefix_cybercrime, asn_high_risk]
-    urls:
-      - https://www.spamhaus.org/drop/asndrop.json
-
-  - kind: textlist
     name: team_cymru_fullbogons_ipv4
     display_name: Team Cymru Fullbogons IPv4
     trust: aggregator
@@ -206,14 +198,6 @@ feeds:
       - https://www.ema.com.ua/wp-json/api/blacklist-query?count=1000000
 
   - kind: textlist
-    name: acma_blocked_gambling_ips
-    display_name: ACMA Blocked Gambling IPs
-    trust: community
-    classification: [policy_illegal_gambling]
-    urls:
-      - https://backend.acma.gov.au/gmbl/api/Domain
-
-  - kind: textlist
     name: global_anti_scam_ips
     display_name: Global Anti Scam IPs
     trust: community
@@ -259,15 +243,6 @@ feeds:
       - https://raw.githubusercontent.com/ziyadnz/threat-intel-ip-feeds/main/output/hourlyIPv4.txt
 
   - kind: textlist
-    name: abusech_sslbl
-    display_name: abuse.ch SSL Blacklist
-    trust: curated
-    threat: [malware_host_active, c2_ioc]
-    classification: [botnet_c2_ssl]
-    urls:
-      - https://sslbl.abuse.ch/blacklist/sslipblacklist.txt
-
-  - kind: textlist
     name: c2intel_30day
     display_name: C2IntelFeeds 30-Day C2 IPs
     trust: curated
@@ -284,15 +259,6 @@ feeds:
     classification: [c2_ioc]
     urls:
       - https://raw.githubusercontent.com/drb-ra/C2IntelFeeds/master/feeds/IPC2s.csv
-
-  - kind: textlist
-    name: spamhaus_edrop
-    display_name: Spamhaus EDROP
-    trust: curated
-    infrastructure: [prefix_cybercrime]
-    threat: [compromised_or_hostile_host]
-    urls:
-      - https://www.spamhaus.org/drop/edrop.txt
 
   - kind: textlist
     name: spamhaus_dropv6
@@ -373,24 +339,6 @@ feeds:
     classification: [malware_distribution, c2_ioc]
     urls:
       - https://malsilo.gitlab.io/feeds/dumps/ip_list.txt
-
-  - kind: textlist
-    name: ellio_community
-    display_name: ELLIO IP Feed Community
-    trust: aggregator
-    threat: [recent_attack_any, community_high_risk]
-    classification: [aggregate_threat_intel_hourly]
-    urls:
-      - https://cdn.ellio.tech/community-feed
-
-  - kind: textlist
-    name: rescure_blacklist
-    display_name: Rescure.me Blacklist
-    trust: aggregator
-    threat: [compromised_or_hostile_host, malware_host_active]
-    classification: [aggregate_threat_intel]
-    urls:
-      - https://rescure.me/rescure_blacklist.txt
 
   - kind: textlist
     name: rutgers_attackers

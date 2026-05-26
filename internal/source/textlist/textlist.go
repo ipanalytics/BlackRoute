@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 	"blackroute/internal/downloader"
 	"blackroute/internal/record"
 )
+
+var ipTokenPattern = regexp.MustCompile(`[0-9A-Fa-f:.]+(?:/[0-9]{1,3})?`)
 
 type Source struct {
 	name           string
@@ -150,35 +153,48 @@ func stripComment(line string) string {
 }
 
 func extractIPTokens(line string) []string {
-	// This tokenizer covers plain text, CSV, JSON-ish arrays, and netset files
-	// without assigning meaning to unrelated fields on the same line.
-	fields := strings.FieldsFunc(line, func(r rune) bool {
-		return r == ',' || r == ';' || r == ':' || r == '|' || r == '\t' || r == ' ' || r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\''
-	})
+	// The scanner keeps IPv6 colons intact while still tolerating CSV, JSON-ish,
+	// netset, URL-ish, and IP:port evidence lines.
+	fields := ipTokenPattern.FindAllString(line, -1)
 	out := make([]string, 0, len(fields))
+	seen := make(map[string]struct{}, len(fields))
 	for _, f := range fields {
-		f = strings.Trim(f, "`()<>")
+		f = strings.Trim(f, "`()<>[]{}\"',;")
 		f = strings.TrimPrefix(f, "//")
 		if f == "" || f == "0.0.0.0" || f == "127.0.0.1" {
 			continue
 		}
 		if strings.Contains(f, "/") {
 			if domainx.NormalizePublicCIDR(f) != "" {
-				out = append(out, f)
+				addToken(&out, seen, f)
 				continue
 			}
 			if host, _, ok := strings.Cut(f, "/"); ok {
 				if _, v := domainx.NormalizePublicIP(host); v != 0 {
-					out = append(out, host)
+					addToken(&out, seen, host)
 				}
 			}
 			continue
 		}
 		if _, v := domainx.NormalizePublicIP(f); v != 0 {
-			out = append(out, f)
+			addToken(&out, seen, f)
+			continue
+		}
+		if host, _, ok := strings.Cut(f, ":"); ok && strings.Contains(host, ".") {
+			if _, v := domainx.NormalizePublicIP(host); v != 0 {
+				addToken(&out, seen, host)
+			}
 		}
 	}
 	return out
+}
+
+func addToken(out *[]string, seen map[string]struct{}, tok string) {
+	if _, ok := seen[tok]; ok {
+		return
+	}
+	seen[tok] = struct{}{}
+	*out = append(*out, tok)
 }
 
 func (s *Source) makeRecord(ip, sourceURL string, ts time.Time) record.Record {
