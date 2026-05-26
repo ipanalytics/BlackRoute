@@ -153,7 +153,7 @@ func extractIPTokens(line string) []string {
 	// This tokenizer covers plain text, CSV, JSON-ish arrays, and netset files
 	// without assigning meaning to unrelated fields on the same line.
 	fields := strings.FieldsFunc(line, func(r rune) bool {
-		return r == ',' || r == ';' || r == ':' || r == '\t' || r == ' ' || r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\''
+		return r == ',' || r == ';' || r == ':' || r == '|' || r == '\t' || r == ' ' || r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\''
 	})
 	out := make([]string, 0, len(fields))
 	for _, f := range fields {

@@ -161,7 +161,7 @@ The default configuration includes:
 - Team Cymru: IPv4 and IPv6 full bogon prefixes.
 - abuse.ch Feodo Tracker: active botnet C2 IPs.
 - SANS ISC DShield, GreenSnow, and IPsum for community risk signals.
-- Binary Defense Banlist, ThreatFox IOC IPs, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, and Global Anti Scam IPs.
+- Binary Defense Banlist, ThreatFox IOC IPs, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, ACMA blocked gambling IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, and ZiyadNZ hourly aggregate IPs.
 
 Commercial feeds and API-key feeds are intentionally not bundled. Add them as private entries in `configs/feeds.yaml` when your license allows local redistribution or internal use.
 
@@ -215,7 +215,10 @@ Classification labels describe source category without forcing everything into `
   "phishing_or_scam",
   "financial_fraud",
   "policy_illegal_gambling",
-  "scam_or_fraud"
+  "scam_or_fraud",
+  "alienvault_otx_reputation",
+  "network_scan_or_abuse",
+  "aggregate_threat_intel_hourly"
 ]
 ```
 

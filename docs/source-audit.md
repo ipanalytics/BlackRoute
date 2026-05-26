@@ -11,6 +11,9 @@ This file records upstream handling for active Blackroute feeds that were review
 | `ukrainian_ema_blocklist_ips` | `https://www.ema.com.ua/wp-json/api/blacklist-query?count=1000000` | Public JSON endpoint, no key in scraper. | Daily mirror cadence. | Direct upstream. |
 | `acma_blocked_gambling_ips` | `https://backend.acma.gov.au/gmbl/api/Domain` | Public JSON endpoint, no key in scraper. | Daily mirror cadence. | Direct upstream. |
 | `global_anti_scam_ips` | `https://raw.githubusercontent.com/elliotwutingfeng/GlobalAntiScamOrg-blocklist/main/global-anti-scam-org-scam-ips.txt` | Original Wix API requires a live browser session token. No static public IP feed was found. | Daily mirror cadence. | Mirror retained. |
+| `alienvault_reputation_generic` | `https://reputation.alienvault.com/reputation.generic` | Public reputation feed used directly by Maltrail. | Monitor by HTTP freshness. | Direct upstream. |
+| `dataplane_attack_feeds` | `https://dataplane.org/*.txt` category feeds | Public pipe-delimited attack feeds used directly by Maltrail. | Monitor by HTTP freshness. | Direct upstream. |
+| `ziyadnz_threat_intel_hourly_ipv4` | `https://raw.githubusercontent.com/ziyadnz/threat-intel-ip-feeds/main/output/hourlyIPv4.txt` | Hourly aggregate IP output. Includes API-key-backed upstreams such as AbuseIPDB and OTX, so Blackroute treats it as an aggregate signal. | Hourly project cadence. | Aggregate retained. |
 
 ## Operational Notes
 

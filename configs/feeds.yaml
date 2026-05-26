@@ -228,3 +228,40 @@ feeds:
     classification: [phishing_or_scam, scam_or_fraud]
     urls:
       - https://raw.githubusercontent.com/elliotwutingfeng/GlobalAntiScamOrg-blocklist/main/global-anti-scam-org-scam-ips.txt
+
+  - kind: textlist
+    name: alienvault_reputation_generic
+    display_name: AlienVault Reputation Generic
+    trust: community
+    threat: [community_high_risk, multi_sensor_high_risk]
+    classification: [alienvault_otx_reputation]
+    urls:
+      - https://reputation.alienvault.com/reputation.generic
+
+  - kind: textlist
+    name: dataplane_attack_feeds
+    display_name: Dataplane Attack Feeds
+    trust: community
+    threat: [recent_attack_any]
+    classification: [network_scan_or_abuse]
+    urls:
+      - https://dataplane.org/dnsrd.txt
+      - https://dataplane.org/dnsrdany.txt
+      - https://dataplane.org/dnsversion.txt
+      - https://dataplane.org/sipinvitation.txt
+      - https://dataplane.org/sipquery.txt
+      - https://dataplane.org/sipregistration.txt
+      - https://dataplane.org/smtpdata.txt
+      - https://dataplane.org/smtpgreet.txt
+      - https://dataplane.org/sshclient.txt
+      - https://dataplane.org/sshpwauth.txt
+      - https://dataplane.org/vncrfb.txt
+
+  - kind: textlist
+    name: ziyadnz_threat_intel_hourly_ipv4
+    display_name: ZiyadNZ Threat Intel Hourly IPv4
+    trust: aggregator
+    threat: [community_high_risk, multi_sensor_high_risk]
+    classification: [aggregate_threat_intel_hourly]
+    urls:
+      - https://raw.githubusercontent.com/ziyadnz/threat-intel-ip-feeds/main/output/hourlyIPv4.txt
