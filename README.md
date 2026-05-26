@@ -78,14 +78,11 @@ go test ./...
 
 ## Releases
 
-The release workflow can be started by pushing a `v*` tag or from GitHub Actions with `workflow_dispatch`. Each release publishes compiled binaries and the generated database artifacts:
+The release workflow runs daily at 03:17 UTC and can also be started manually from GitHub Actions. Releases use date tags in `YYYY.MM.DD` format and publish generated database artifacts:
 
-- `blackroute_<version>_<os>_<arch>.tar.gz` or `.zip`
-- `blackroute_<version>_database.mmdb`
-- `blackroute_<version>_records.csv`
-- `blackroute_<version>_records.jsonl`
-- `blackroute_<version>_run_stats.json`
-- `blackroute_<version>_database.tar.gz`
+- `blackroute_<YYYY.MM.DD>.mmdb`
+- `blackroute_<YYYY.MM.DD>_exports.tar.gz` with CSV, JSONL, and run stats
+- `blackroute_<YYYY.MM.DD>_run_stats.json`
 - `checksums.txt`
 
 Build a local ThreatFox IP feed directly from the public abuse.ch export:
