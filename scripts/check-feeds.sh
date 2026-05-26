@@ -6,6 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 FEEDS_FILE="${1:-$ROOT/configs/feeds.yaml}"
 MAX_AGE_HOURS="${MAX_FEED_AGE_HOURS:-168}"
+FAIL_ON_STALE="${FAIL_ON_STALE_FEEDS:-false}"
 
 if ! command -v curl >/dev/null; then
   echo "curl is required" >&2
@@ -28,11 +29,13 @@ if [[ -z "$urls" ]]; then
 fi
 
 failures=0
+stale=0
 now="$(date +%s)"
 
 printf 'Blackroute feed monitor\n'
 printf 'Config: %s\n' "$FEEDS_FILE"
 printf 'Max age: %s hours\n\n' "$MAX_AGE_HOURS"
+printf 'Fail on stale: %s\n\n' "$FAIL_ON_STALE"
 
 while IFS= read -r url; do
   [[ -z "$url" ]] && continue
@@ -76,8 +79,8 @@ while IFS= read -r url; do
     if modified_ts="$(date -d "$last_modified" +%s 2>/dev/null)"; then
       age_hours=$(( (now - modified_ts) / 3600 ))
       if [[ "$age_hours" -gt "$MAX_AGE_HOURS" ]]; then
-        printf 'STALE %-3s %sh %s\n' "$code" "$age_hours" "$url"
-        failures=$((failures + 1))
+        printf 'WARN  %-3s stale_%sh %s\n' "$code" "$age_hours" "$url"
+        stale=$((stale + 1))
       else
         printf 'OK    %-3s %sh %s\n' "$code" "$age_hours" "$url"
       fi
@@ -90,4 +93,10 @@ while IFS= read -r url; do
   rm -f "$headers"
 done <<< "$urls"
 
+unavailable="$failures"
+if [[ "$FAIL_ON_STALE" == "true" && "$stale" -gt 0 ]]; then
+  failures=$((unavailable + stale))
+fi
+
+printf '\nSummary: %d unavailable, %d stale\n' "$unavailable" "$stale"
 exit "$failures"
