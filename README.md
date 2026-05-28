@@ -2,6 +2,10 @@
 
 Blackroute builds a local IP reputation database from public abuse, malware, botnet C2, spam, phishing, brute-force, bogon, and cybercrime-prefix feeds. The primary artifact is `blackroute.mmdb`, a MaxMind-compatible database that can be used in gateways, proxies, fraud checks, SIEM pipelines, and internal enrichment jobs.
 
+<p align="center">
+  <img src="./site/banner.png" alt="Blackroute builds a local IP reputation database from public abuse, malware, botnet C2, spam, phishing, brute-force, bogon, and cybercrime-prefix feeds." width="100%">
+</p>
+
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
 The default catalog currently contains 52 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
