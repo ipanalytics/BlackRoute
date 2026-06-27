@@ -6,12 +6,25 @@ import (
 	"strings"
 )
 
+var reservedPrefixes = []netip.Prefix{
+	netip.MustParsePrefix("0.0.0.0/8"),
+	netip.MustParsePrefix("192.0.2.0/24"),
+	netip.MustParsePrefix("198.18.0.0/15"),
+	netip.MustParsePrefix("198.51.100.0/24"),
+	netip.MustParsePrefix("203.0.113.0/24"),
+	netip.MustParsePrefix("240.0.0.0/4"),
+	netip.MustParsePrefix("100::/64"),
+	netip.MustParsePrefix("2001:db8::/32"),
+	netip.MustParsePrefix("2002::/16"),
+}
+
 // IsPublicIP returns true iff ip is a globally-routable unicast address.
 // Filters: loopback, link-local, multicast, unspecified, RFC1918 private,
 // CGNAT (100.64.0.0/10), and IPv4 link-local (169.254/16).
 func IsPublicIP(ip netip.Addr) bool {
 	if !ip.IsValid() || ip.IsLoopback() || ip.IsLinkLocalUnicast() ||
-		ip.IsMulticast() || ip.IsUnspecified() || ip.IsPrivate() {
+		ip.IsMulticast() || ip.IsUnspecified() || ip.IsPrivate() ||
+		!ip.IsGlobalUnicast() || isReservedPrefix(ip) {
 		return false
 	}
 	if ip.Is4() {
@@ -26,6 +39,15 @@ func IsPublicIP(ip netip.Addr) bool {
 		}
 	}
 	return true
+}
+
+func isReservedPrefix(ip netip.Addr) bool {
+	for _, prefix := range reservedPrefixes {
+		if prefix.Contains(ip) {
+			return true
+		}
+	}
+	return false
 }
 
 // NormalizeIP returns the canonical string form of an IP and its version.

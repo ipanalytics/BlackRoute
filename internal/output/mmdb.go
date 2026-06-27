@@ -19,7 +19,7 @@ func WriteThreatMMDB(path string, records []record.Record) error {
 	writer, err := mmdbwriter.New(mmdbwriter.Options{
 		DatabaseType: "blackroute",
 		IPVersion:    6,
-		RecordSize:   28,
+		RecordSize:   32,
 		Languages:    []string{"en"},
 		Description: map[string]string{
 			"en": "Blackroute IP reputation intelligence",

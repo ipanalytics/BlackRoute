@@ -163,15 +163,6 @@ feeds:
       - https://threatfox.abuse.ch/export/csv/ip-port/full
 
   - kind: textlist
-    name: usom_blocklist_ips
-    display_name: USOM Malicious IPs
-    trust: community
-    threat: [compromised_or_hostile_host]
-    classification: [national_cert_malicious, malicious_url_or_ip]
-    urls:
-      - https://www.usom.gov.tr/url-list.txt
-
-  - kind: textlist
     name: inversion_cloud_ips
     display_name: Inversion Cloud IPs
     trust: aggregator

@@ -2,13 +2,9 @@
 
 Blackroute builds a local IP reputation database from public abuse, malware, botnet C2, spam, phishing, brute-force, bogon, and cybercrime-prefix feeds. The primary artifact is `blackroute.mmdb`, a MaxMind-compatible database that can be used in gateways, proxies, fraud checks, SIEM pipelines, and internal enrichment jobs.
 
-<p align="center">
-  <img src="./site/banner.png" alt="Blackroute builds a local IP reputation database from public abuse, malware, botnet C2, spam, phishing, brute-force, bogon, and cybercrime-prefix feeds." width="100%">
-</p>
-
 Blackroute does not resolve hostnames, query PTR records, crawl DNS, fingerprint networks, or scan anything. It only downloads configured feeds, extracts public IP addresses and CIDR prefixes, attaches labels, merges duplicates, and writes deterministic output files.
 
-The default catalog currently contains 52 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
+The default catalog currently contains 51 enabled IP/CIDR sources. It does not include VPN, proxy, Tor, or generic anonymizer lists as threat evidence.
 
 ## Dataset Coverage
 
@@ -17,7 +13,7 @@ The source catalog is grouped around observed abuse rather than network type. Re
 | Area | Enabled source labels | What it contributes |
 | --- | ---: | --- |
 | Recent attacks and abuse | 24 | SSH, mail, web, SIP, FTP, bot, scanner, and short-window attacker signals |
-| Compromised or hostile hosts | 10 | Confirmed compromised IPs, botnet infrastructure, and hostile reputation feeds |
+| Compromised or hostile hosts | 9 | Confirmed compromised IPs, botnet infrastructure, and hostile reputation feeds |
 | Active malware and C2 | 11 | abuse.ch, ThreatFox, C2IntelFeeds, Threatview, MalSilo, RomainMarcoux, Bitwire, and related C2 indicators |
 | Community and multi-sensor risk | 15 | Correlated reputation from CINSscore, IPsum, GreenSnow, AlienVault, DShield, AbuseIPDB mirrors, Bitwire, and hourly aggregates |
 | Brute-force and spam | 7 | SSH, POP3, mail, form spam, and abuse sources |
@@ -29,7 +25,7 @@ Trust mix:
 | --- | ---: |
 | `aggregator` | 29 |
 | `curated` | 9 |
-| `community` | 13 |
+| `community` | 12 |
 | `authoritative` | 1 |
 
 ## Why Blackroute
@@ -193,7 +189,7 @@ The default configuration includes:
 - Team Cymru: IPv4 and IPv6 full bogon prefixes.
 - abuse.ch Feodo Tracker: active botnet C2 IPs.
 - SANS ISC DShield, GreenSnow, and IPsum for community risk signals.
-- Binary Defense Banlist, ThreatFox IOC IPs, C2IntelFeeds, USOM malicious IPs, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
+- Binary Defense Banlist, ThreatFox IOC IPs, C2IntelFeeds, Inversion Cloud IPs, Inversion DNSBL IPv4, Ukrainian EMA fraud IPs, Global Anti Scam IPs, AlienVault reputation, Dataplane attack feeds, ZiyadNZ hourly aggregate IPs, StopForumSpam, Blocklist.net.ua, Threatview, MalSilo, Rutgers, BruteForceBlocker, POP3 Gropers, Phishing.Database IPs, AbuseIPDB high-confidence mirrors, RomainMarcoux 40K inbound/outbound, ShadowWhisperer scanners, IP BlockList v4 Level 3+, and Bitwire inbound/outbound.
 
 Commercial feeds and API-key feeds are intentionally not bundled. Add them as private entries in `configs/feeds.yaml` when your license allows local redistribution or internal use.
 
