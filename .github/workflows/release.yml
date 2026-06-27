@@ -1,0 +1,77 @@
+name: Release database
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  database:
+    name: Build and publish database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Resolve release tag
+        id: release
+        run: |
+          day="$(date -u +'%Y.%m.%d')"
+          echo "tag=$day" >> "$GITHUB_OUTPUT"
+          echo "name=Blackroute $day" >> "$GITHUB_OUTPUT"
+
+      - name: Build Blackroute database
+        env:
+          VERSION: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          go build -trimpath -ldflags="-s -w" -o ./bin/blackroute ./cmd/collector
+          ./bin/blackroute --feeds=configs/feeds.yaml --output=release --skip-mmdb
+          go run ./cmd/release-cleaner --feeds=configs/feeds.yaml --release=release
+
+          test -s release/blackroute.mmdb
+          test -s release/blackroute.csv
+          test -s release/blackroute.jsonl
+          test -s release/run_stats.json
+          test -s release/cleanup_stats.json
+          test -s release/release_summary.md
+
+          cp release/blackroute.mmdb "dist/blackroute_${VERSION}.mmdb"
+          cp release/run_stats.json "dist/blackroute_${VERSION}_run_stats.json"
+          cp release/cleanup_stats.json "dist/blackroute_${VERSION}_cleanup_stats.json"
+          cp release/release_summary.md "dist/blackroute_${VERSION}_release_summary.md"
+          tar -czf "dist/blackroute_${VERSION}_exports.tar.gz" -C release \
+            blackroute.csv blackroute.jsonl run_stats.json cleanup_stats.json release_summary.md
+
+      - name: Checksums
+        run: |
+          cd dist
+          find . -maxdepth 1 -type f ! -name checksums.txt -print0 \
+            | sort -z \
+            | xargs -0 sha256sum > checksums.txt
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: ${{ steps.release.outputs.name }}
+          prerelease: false
+          make_latest: true
+          overwrite_files: true
+          body_path: dist/blackroute_${{ steps.release.outputs.tag }}_release_summary.md
+          files: |
+            dist/blackroute_*.mmdb
+            dist/blackroute_*_exports.tar.gz
+            dist/blackroute_*_run_stats.json
+            dist/blackroute_*_cleanup_stats.json
+            dist/blackroute_*_release_summary.md
+            dist/checksums.txt
